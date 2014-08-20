@@ -18,7 +18,7 @@
 
 #define N 4096
 
-#define CIPHERLEN 32
+#define CIPHERLEN 128
 
 
 using namespace std;
@@ -54,7 +54,7 @@ void AESdec(byte* decpt, u_char* cipher, string keystr)
 {
     byte iv[AES::BLOCKSIZE];
     byte key[AES::MAX_KEYLENGTH];
-    int i;
+    uint32_t i;
     for(i=0;i<AES::BLOCKSIZE;i++){
         iv[i] = 0;
     }
@@ -77,10 +77,10 @@ int main()
     char dispbuf[N];
     ns_msg msg;
     ns_rr rr;
-    int l;
+    uint32_t l;
     uint32_t i;
     string domain, domainhash, request, output;
-    byte b64decarr[CIPHERLEN];
+    byte b64decarr[CIPHERLEN*8/6+1];
     byte decptarr[CIPHERLEN];
 
 
@@ -91,10 +91,10 @@ int main()
     output = hashdomain(request);
 
 
-
+    cout << request << endl;
 
     domain = output.substr(0,35)+'.'+request.substr(request.find_first_of("@")+1);
-    cout << domain << " " << domain.length() << endl;
+    cout << endl << domain << " " << domain.length() << endl;
 
     res_init();
     l = res_query(domain.c_str(), ns_c_any, ns_t_any, nsbuf, sizeof(nsbuf));
@@ -104,25 +104,12 @@ int main()
     {
         ns_parserr(&msg, ns_s_an, i, &rr);
         u_char const* rdata = ns_rr_rdata(rr);
-        cout << "answer:" << rdata+1 << endl;
-      //cout << "enc: " << base64dec(rdata) << endl;
-      //cout << rdata << endl;
-        base64dec(b64decarr, (byte*)rdata+1);
-        for(i=0;i<CIPHERLEN;i++){
-            cout << (unsigned)b64decarr[i] << " ";
-        }
-        cout << endl;
+        base64dec(b64decarr, (byte*)rdata);
         AESdec(decptarr, b64decarr, request);
         cout << endl << decptarr << endl;
         ns_sprintrr(&msg, &rr, NULL, NULL, dispbuf, sizeof(dispbuf));
-        printf("\t%s \n", dispbuf);
+        cout << endl << dispbuf << endl;
     }
-
-    byte test[CIPHERLEN];
-    base64dec(test, (byte*)"99cE5jy4wQt8P1kUxQVCUVfV3vFdTt8X6HFV9Abm9mg=");
-
-
-
 
 
     cout << endl;

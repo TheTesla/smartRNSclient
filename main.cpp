@@ -42,11 +42,11 @@ string hashdomain(string request)
     return output;
 }
 
-void base64dec(byte* dec, byte* base64arr)
+void base64dec(byte* dec, byte* base64arr, uint32_t len = CIPHERLEN*8/6+1)
 {
     Base64Decoder b64d;
     b64d.Attach(new ArraySink((byte*)dec, CIPHERLEN));
-    b64d.Put(base64arr, CIPHERLEN*8/6+1);
+    b64d.Put(base64arr, len);
     b64d.MessageEnd();
 }
 
@@ -100,11 +100,21 @@ int main()
     l = res_query(domain.c_str(), ns_c_any, ns_t_any, nsbuf, sizeof(nsbuf));
     ns_initparse(nsbuf, l, &msg);
     l = ns_msg_count(msg, ns_s_an);
+    cout << l << endl;
     for (i = 0; i < l; i++)
     {
         ns_parserr(&msg, ns_s_an, i, &rr);
         u_char const* rdata = ns_rr_rdata(rr);
-        base64dec(b64decarr, (byte*)rdata);
+        if(0==rdata) {
+            cout << "Kein Eintrag!" << endl;
+            return 0;
+        }
+        cout << (unsigned)rdata[0] << endl;
+        if(0==rdata[0]){
+            cout << "Leerer Eintrag!" << endl;
+            return 0;
+        }
+        base64dec(b64decarr, (byte*)rdata, rdata[0]);
         AESdec(decptarr, b64decarr, request);
         cout << endl << decptarr << endl;
         ns_sprintrr(&msg, &rr, NULL, NULL, dispbuf, sizeof(dispbuf));

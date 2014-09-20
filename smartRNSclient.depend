@@ -1,10 +1,11 @@
 # depslib dependency file v1.0
-1408539161 source:/home/stefan/smartRNSclient/main.cpp
+1411174533 source:/home/stefan/smartRNSclient/main.cpp
 	<iostream>
 	<netinet/in.h>
 	<arpa/nameser.h>
 	<resolv.h>
 	<string>
+	<vector>
 	<crypto++/modes.h>
 	<crypto++/aes.h>
 	<crypto++/filters.h>

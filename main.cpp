@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 #include "configuration.h"
+#include "data.h"
+#include "parse.h"
 
 #include <crypto++/modes.h>
 #include <crypto++/aes.h>
@@ -135,6 +137,7 @@ int main(int argc, char *argv[])
     cout << txts[0] << endl << txts[1]  << endl;
 
     txtrec2smartrnsconf(txts[0]);
+    txtrec2smartrnsdata(txts[0]);
 
 
     return 0;

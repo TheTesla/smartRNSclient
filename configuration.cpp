@@ -27,69 +27,10 @@ contenc_et contencstr2enum(string str)
 }
 
 
-vector<keyval_t> txtrecstr2smartrnsconfig(string txtstr)
+
+
+smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
 {
-    vector<keyval_t> confvec;
-    keyval_t confelem;
-    uint32_t i, k;
-    string key, keysstr, val;
-    vector<string> keys;
-    size_t pos;
-
-    key = "";
-    keys.clear();
-
-    i = 0;
-    try{
-        while(std::string::npos!=pos){ // iterate over TXTrecord
-            pos = txtstr.find_first_not_of(" "); // delete all spaces...
-            txtstr = txtstr.substr(pos); // ...from beginning
-            if("}"==txtstr.substr(0,1)){ // exit {...} expression
-                keys.pop_back();
-            }
-            pos = txtstr.find_first_of("{=; "); // variable name ended, expression begins
-            key = txtstr.substr(0,pos); // get variable name
-            if("."==key.substr(0,1)){ // delete beginning "." of name (if structure{ .element1=...)
-                key = key.substr(1);
-            }
-            txtstr = txtstr.substr(pos);
-            pos = txtstr.find_first_not_of(" "); // delete trailing spaces
-            txtstr = txtstr.substr(pos);
-
-            if("="==txtstr.substr(0,1)){ // assignement
-                txtstr = txtstr.substr(1);
-                pos = txtstr.find_first_not_of(" "); // delete trailing spaces
-                txtstr = txtstr.substr(pos);
-                pos = txtstr.find_first_of(";"); // assigned value ends with ";"
-                val = txtstr.substr(0,pos);
-                keysstr = "";
-                for(k=0;k<keys.size();k++){ // get the complete name if structure{.element=...} is used -> structure.element
-                    keysstr += keys[k] + ".";
-                }
-                confelem.key = keysstr + key; // build complete variable name and save to key-value-pair
-                confelem.val = val; // ... add the value
-                confvec.push_back(confelem);
-                i++; // ... next key-val-pair
-                txtstr = txtstr.substr(pos+1);
-            }else if("{"==txtstr.substr(0,1)){ // shorted structure initialisation starts: structurename{.elem1=42; .elem2=23}
-                keys.push_back(key); // do the structurename on top of the stack - yes, nesting is possible
-                txtstr = txtstr.substr(pos+1);
-
-            }
-
-        }
-    }
-    catch( std::exception const &exc){ // config ends
-    }
-
-    return confvec;
-
-}
-
-
-smartrns_conf_t txtrec2smartrnsconf(u_char* txtrec)
-{
-    vector<keyval_t> confvec;
     uint32_t i;
     string txt, txtstr;
     smartrns_conf_t smartrnsconf;
@@ -102,33 +43,44 @@ smartrns_conf_t txtrec2smartrnsconf(u_char* txtrec)
     smartrnsconf.subdomlen = 0;
     smartrnsconf.contenc   = CONTENC_NOT_SPEC;
 
-    txt.assign((const char*)txtrec);
-    txtstr = txt.substr(1); // delete length-entry
-
-    confvec = txtrecstr2smartrnsconfig(txtstr);
-
-    for(i=0;i<confvec.size();i++){
-        if("smartrns.version" == confvec[i].key){
-            smartrnsconf.version = confvec[i].val;
-        }else if("smartrns.salt" == confvec[i].key){
-            smartrnsconf.salt = confvec[i].val;
-        }else if("smartrns.urienc" == confvec[i].key){
-            smartrnsconf.urienc = uriencstr2enum(confvec[i].val);
-        }else if("smartrns.subdomlen" == confvec[i].key){
-            smartrnsconf.subdomlen = atoi(confvec[i].val.c_str());
-        }else if("smartrns.passwd" == confvec[i].key){
+    for(i=0;i<smartrnsvec.size();i++){
+        if("smartrns.conf.version" == smartrnsvec[i].key){
+            smartrnsconf.version = smartrnsvec[i].val;
+        }else if("smartrns.conf.salt" == smartrnsvec[i].key){
+            smartrnsconf.salt = smartrnsvec[i].val;
+        }else if("smartrns.conf.urienc" == smartrnsvec[i].key){
+            smartrnsconf.urienc = uriencstr2enum(smartrnsvec[i].val);
+        }else if("smartrns.conf.subdomlen" == smartrnsvec[i].key){
+            smartrnsconf.subdomlen = atoi(smartrnsvec[i].val.c_str());
+        }else if("smartrns.conf.passwd" == smartrnsvec[i].key){
             smartrnsconf.passwd = true;
-        }else if("smartrns.subdom" == confvec[i].key){
+        }else if("smartrns.conf.subdom" == smartrnsvec[i].key){
             smartrnsconf.subdom = true;
-        }else if("smartrns.contenc" == confvec[i].key){
-            smartrnsconf.contenc = contencstr2enum(confvec[i].val);
+        }else if("smartrns.conf.contenc" == smartrnsvec[i].key){
+            smartrnsconf.contenc = contencstr2enum(smartrnsvec[i].val);
         }
 
-        cout << confvec[i].key << " " << confvec[i].val << endl;
+        cout << smartrnsvec[i].key << " " << smartrnsvec[i].val << endl;
     }
 
     cout << smartrnsconf.version << " " << smartrnsconf.salt << " " << smartrnsconf.urienc << " " << smartrnsconf.subdomlen << " " << smartrnsconf.contenc << " " << smartrnsconf.passwd << " " << smartrnsconf.subdom << endl;
 
     return smartrnsconf;
+}
+
+
+
+
+smartrns_conf_t txtrec2smartrnsconf(u_char* txtrec)
+{
+    vector<keyval_t> smartrnsvec;
+    string txt, txtstr;
+
+    txt.assign((const char*)txtrec);
+    txtstr = txt.substr(1); // delete length-entry
+
+    smartrnsvec = txtrecstrparse(txtstr);
+
+    return smartrnsvec2smartrnsconf(smartrnsvec);
 }
 

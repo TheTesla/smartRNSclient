@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "parse.h"
 
 using namespace std;
 
@@ -38,13 +39,14 @@ typedef struct smartrns_conf_s
     bool subdom;
 } smartrns_conf_t;
 
-typedef struct keyval_s
-{
-    string key;
-    string val;
-} keyval_t;
 
-vector<keyval_t> txtrecstr2smartrnsconfig(string txtstr);
+
+
+
+
+
+vector<keyval_t> txtrecstrparse(string txtstr);
+smartrns_conf_t confvec2smartrnsconf(vector<keyval_t> confvec);
 smartrns_conf_t txtrec2smartrnsconf(u_char* txtrec);
 
 

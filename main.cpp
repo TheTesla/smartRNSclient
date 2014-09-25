@@ -116,6 +116,9 @@ int main(int argc, char *argv[])
     uint32_t l;
     uint32_t i;
     string domain, domainhash, request, output, topdomain;
+    smartrns_conf_t conf;
+    smartrns_data_t data;
+
     byte b64decarr[CIPHERLEN*8/6+1];
     byte decptarr[CIPHERLEN];
 
@@ -136,8 +139,11 @@ int main(int argc, char *argv[])
     cout << getTXTrecs(topdomain, txts, 4);
     cout << txts[0] << endl << txts[1]  << endl;
 
-    txtrec2smartrnsconf(txts[0]);
-    txtrec2smartrnsdata(txts[0]);
+    conf = txtrec2smartrnsconf(txts[0]);
+    print_smartrns_config(conf);
+    data = txtrec2smartrnsdata(txts[0]);
+    print_smartrns_data(data);
+
 
 
     return 0;

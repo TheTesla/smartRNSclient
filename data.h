@@ -99,6 +99,7 @@ subtype_et str2subtype(string str);
 usagetype_et str2usagetype(string str);
 smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec);
 smartrns_data_t txtrec2smartrnsdata(u_char* txtrec);
+void print_smartrns_data(smartrns_data_t data);
 
 
 #endif // DATA_H_INCLUDED

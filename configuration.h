@@ -43,11 +43,14 @@ typedef struct smartrns_conf_s
 
 
 
-
-
+urienc_et uriencstr2enum(string str);
+string enum2uriencstr(urienc_et enc);
+contenc_et contencstr2enum(string str);
+string enum2contencstr(contenc_et enc);
 vector<keyval_t> txtrecstrparse(string txtstr);
 smartrns_conf_t confvec2smartrnsconf(vector<keyval_t> confvec);
 smartrns_conf_t txtrec2smartrnsconf(u_char* txtrec);
+void print_smartrns_config(smartrns_conf_t conf);
 
 
 #endif // CONFIGURATION_H_INCLUDED

@@ -19,6 +19,20 @@ urienc_et uriencstr2enum(string str)
     return URIENC_NOT_SPEC;
 }
 
+string enum2uriencstr(urienc_et enc)
+{
+    if(NO_URIENC        == enc) return "NONE";
+    if(SHA_1            == enc) return "SHA-1";
+    if(SHA_224          == enc) return "SHA-224";
+    if(SHA_256          == enc) return "SHA-256";
+    if(SHA_3            == enc) return "SHA-3";
+    if(SHA_384          == enc) return "SHA-384";
+    if(SHA_512          == enc) return "SHA-512";
+    if(SHA_2            == enc) return "SHA-2";
+    if(URIENC_NOT_SPEC  == enc) return "not specified";
+    return "undefined";
+}
+
 contenc_et contencstr2enum(string str)
 {
     if("NONE"           == str) return NO_CONTENC;
@@ -26,7 +40,13 @@ contenc_et contencstr2enum(string str)
     return CONTENC_NOT_SPEC;
 }
 
-
+string enum2contencstr(contenc_et enc)
+{
+    if(NO_CONTENC           == enc) return "NONE";
+    if(AES_128              == enc) return "AES-128";
+    if(CONTENC_NOT_SPEC     == enc) return "not specified";
+    return "undefined";
+}
 
 
 smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
@@ -82,5 +102,23 @@ smartrns_conf_t txtrec2smartrnsconf(u_char* txtrec)
     smartrnsvec = txtrecstrparse(txtstr);
 
     return smartrnsvec2smartrnsconf(smartrnsvec);
+}
+
+void print_smartrns_config(smartrns_conf_t conf)
+{
+    cout << endl;
+    cout << "smartrns-config" << endl;
+    cout << endl;
+    cout << "  Version:           " << conf.version << endl;
+    cout << "  salt             = " << conf.salt << endl;
+    cout << "  subdomain-length = " << conf.subdomlen << endl;
+    cout << "  uri-encoding     = " << enum2uriencstr(conf.urienc) << endl;
+    cout << "  content-encoding = " << enum2contencstr(conf.contenc) << endl;
+
+    if(conf.subdom) cout << "  + Subdomain available!" << endl;
+    if(conf.passwd) cout << "  + Please provide password!" << endl;
+
+    cout << endl;
+
 }
 

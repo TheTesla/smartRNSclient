@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1411513831 source:/home/stefan/smartRNSclient/main.cpp
+1411590439 source:/home/stefan/smartRNSclient/main.cpp
 	<iostream>
 	<netinet/in.h>
 	<arpa/nameser.h>
@@ -17,11 +17,11 @@
 	<crypto++/hex.h>
 	<crypto++/base64.h>
 
-1411513538 source:/home/stefan/smartRNSclient/configuration.cpp
+1411597210 source:/home/stefan/smartRNSclient/configuration.cpp
 	"configuration.h"
 	<iostream>
 
-1411513386 /home/stefan/smartRNSclient/configuration.h
+1411590335 /home/stefan/smartRNSclient/configuration.h
 	<vector>
 	<string>
 	"parse.h"
@@ -30,11 +30,11 @@
 	<vector>
 	<string>
 
-1411513961 source:/home/stefan/smartRNSclient/data.cpp
+1411603527 source:/home/stefan/smartRNSclient/data.cpp
 	"data.h"
 	<iostream>
 
-1411517631 /home/stefan/smartRNSclient/data.h
+1411603235 /home/stefan/smartRNSclient/data.h
 	<vector>
 	<string>
 	"parse.h"

@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+
 #include "parse.h"
 
 using namespace std;
@@ -98,7 +100,7 @@ entrytype_et str2entrytype(string str);
 subtype_et str2subtype(string str);
 usagetype_et str2usagetype(string str);
 smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec);
-smartrns_data_t txtrec2smartrnsdata(u_char* txtrec);
+smartrns_data_t txtrec2smartrnsdata(string txtstr);
 void print_smartrns_data(smartrns_data_t data);
 
 

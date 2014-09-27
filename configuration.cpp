@@ -3,7 +3,6 @@
 #include "configuration.h"
 
 
-#include <iostream>
 
 
 urienc_et uriencstr2enum(string str)
@@ -80,10 +79,8 @@ smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
             smartrnsconf.contenc = contencstr2enum(smartrnsvec[i].val);
         }
 
-        cout << smartrnsvec[i].key << " " << smartrnsvec[i].val << endl;
     }
 
-    cout << smartrnsconf.version << " " << smartrnsconf.salt << " " << smartrnsconf.urienc << " " << smartrnsconf.subdomlen << " " << smartrnsconf.contenc << " " << smartrnsconf.passwd << " " << smartrnsconf.subdom << endl;
 
     return smartrnsconf;
 }
@@ -91,13 +88,9 @@ smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
 
 
 
-smartrns_conf_t txtrec2smartrnsconf(u_char* txtrec)
+smartrns_conf_t txtrec2smartrnsconf(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
-    string txt, txtstr;
-
-    txt.assign((const char*)txtrec);
-    txtstr = txt.substr(1); // delete length-entry
 
     smartrnsvec = txtrecstrparse(txtstr);
 

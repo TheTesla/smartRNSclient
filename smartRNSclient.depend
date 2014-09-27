@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1411590439 source:/home/stefan/smartRNSclient/main.cpp
+1411856144 source:/home/stefan/smartRNSclient/main.cpp
 	<iostream>
 	<netinet/in.h>
 	<arpa/nameser.h>
@@ -9,6 +9,41 @@
 	"configuration.h"
 	"data.h"
 	"parse.h"
+	"crypto.h"
+	"dnsquery.h"
+
+1411688657 source:/home/stefan/smartRNSclient/configuration.cpp
+	"configuration.h"
+
+1411688589 /home/stefan/smartRNSclient/configuration.h
+	<vector>
+	<string>
+	<iostream>
+	"parse.h"
+
+1411688476 /home/stefan/smartRNSclient/parse.h
+	<vector>
+	<string>
+	<iostream>
+
+1411688683 source:/home/stefan/smartRNSclient/data.cpp
+	"data.h"
+
+1411686987 /home/stefan/smartRNSclient/data.h
+	<vector>
+	<string>
+	<iostream>
+	"parse.h"
+
+1411857251 source:/home/stefan/smartRNSclient/parse.cpp
+	"parse.h"
+
+1411850678 source:/home/stefan/smartRNSclient/crypto.cpp
+	"crypto.h"
+
+1411850989 /home/stefan/smartRNSclient/crypto.h
+	<vector>
+	<string>
 	<crypto++/modes.h>
 	<crypto++/aes.h>
 	<crypto++/filters.h>
@@ -16,29 +51,15 @@
 	<crypto++/sha.h>
 	<crypto++/hex.h>
 	<crypto++/base64.h>
-
-1411597210 source:/home/stefan/smartRNSclient/configuration.cpp
-	"configuration.h"
 	<iostream>
 
-1411590335 /home/stefan/smartRNSclient/configuration.h
+1411845535 source:/home/stefan/smartRNSclient/dnsquery.cpp
+	"dnsquery.h"
+
+1411845535 /home/stefan/smartRNSclient/dnsquery.h
 	<vector>
 	<string>
-	"parse.h"
-
-1411513536 /home/stefan/smartRNSclient/parse.h
-	<vector>
-	<string>
-
-1411603527 source:/home/stefan/smartRNSclient/data.cpp
-	"data.h"
-	<iostream>
-
-1411603235 /home/stefan/smartRNSclient/data.h
-	<vector>
-	<string>
-	"parse.h"
-
-1411513487 source:/home/stefan/smartRNSclient/parse.cpp
-	"parse.h"
+	<netinet/in.h>
+	<arpa/nameser.h>
+	<resolv.h>
 

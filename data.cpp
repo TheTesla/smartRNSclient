@@ -1,7 +1,6 @@
 
 #include "data.h"
 
-#include <iostream>
 
 
 entrytype_et str2entrytype(string str)
@@ -115,19 +114,15 @@ smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec)
             if("1" == smartrnsvec[i].val){
                 if(PHONE_NR == entry.type){
                     entry.entry = (void*) new smartrns_data_entry_phone_t;
-                    cout << "phone" << endl;
                     *((smartrns_data_entry_phone_t*) entry.entry) = phone;
                 }else if(EMAIL == entry.type){
                     entry.entry = (void*) new smartrns_data_entry_email_t;
-                    cout << "email" << endl;
                     *((smartrns_data_entry_email_t*) entry.entry) = email;
                 }else if(ICQ == entry.type){
                     entry.entry = (void*) new smartrns_data_entry_icq_t;
-                    cout << "icq" << endl;
                     *((smartrns_data_entry_icq_t*) entry.entry) = icq;
                 }else if(JABBER == entry.type){
                     entry.entry = (void*) new smartrns_data_entry_jabber_t;
-                    cout << "jabber" << endl;
                     *((smartrns_data_entry_jabber_t*) entry.entry) = jabber;
                 }
                 data.entries.push_back(entry);
@@ -135,20 +130,15 @@ smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec)
 
         }
 
-        cout << smartrnsvec[i].key << " " << smartrnsvec[i].val << endl;
     }
 
     return data;
 }
 
 
-smartrns_data_t txtrec2smartrnsdata(u_char* txtrec)
+smartrns_data_t txtrec2smartrnsdata(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
-    string txt, txtstr;
-
-    txt.assign((const char*)txtrec);
-    txtstr = txt.substr(1); // delete length-entry
 
     smartrnsvec = txtrecstrparse(txtstr);
 

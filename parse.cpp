@@ -47,7 +47,7 @@ vector<keyval_t> txtrecstrparse(string txtstr)
                 txtstr = txtstr.substr(pos+1);
             }else if("{"==txtstr.substr(0,1)){ // shorted structure initialisation starts: structurename{.elem1=42; .elem2=23}
                 keys.push_back(key); // do the structurename on top of the stack - yes, nesting is possible
-                txtstr = txtstr.substr(pos+1);
+                txtstr = txtstr.substr(1);
 
             }
 
@@ -59,3 +59,27 @@ vector<keyval_t> txtrecstrparse(string txtstr)
     return smartrnsvec;
 
 }
+
+
+void print_key_val_vec(vector<keyval_t> arg)
+{
+    uint32_t i;
+    for(i=0;i<arg.size();i++){
+        cout << arg[i].key << " " << arg[i].val << endl;
+    }
+
+}
+
+vector<keyval_t> txtrec2keyvalvec(vector<string> TXT)
+{
+    uint32_t i;
+    vector<keyval_t> keyvalvec, keyvalvectmp;
+    string txt, txtstr;
+    for(i=0;i<TXT.size();i++){
+        keyvalvectmp = txtrecstrparse(TXT[i]);
+        keyvalvec.insert(keyvalvec.end(), keyvalvectmp.begin(), keyvalvectmp.end());
+    }
+
+    return keyvalvec;
+}
+

@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+
 
 using namespace std;
 
@@ -13,5 +15,7 @@ typedef struct keyval_s
 } keyval_t;
 
 vector<keyval_t> txtrecstrparse(string txtstr);
+void print_key_val_vec(vector<keyval_t> arg);
+vector<keyval_t> txtrec2keyvalvec(vector<string> TXT);
 
 #endif // PARSE_H_INCLUDED

@@ -8,6 +8,17 @@
 
 using namespace std;
 
+
+typedef enum primenc_e
+{
+    PRIMENC_NOT_SPEC = -1,
+    NO_PRIMENC  =  0,
+    BASE16      = 16,
+    BASE32      = 32,
+    BASE64      = 64,
+    BASE85      = 85
+} primenc_et;
+
 typedef enum urienc_e
 {
     URIENC_NOT_SPEC = -1,
@@ -32,8 +43,10 @@ typedef enum contenc_e
 typedef struct smartrns_conf_s
 {
     string version;
+    primenc_et uriprimenc;
     urienc_et urienc;
     uint32_t subdomlen;
+    primenc_et contprimenc;
     contenc_et contenc;
     string salt;
     bool passwd;

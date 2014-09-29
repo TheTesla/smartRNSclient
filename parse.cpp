@@ -1,7 +1,7 @@
 
 #include "parse.h"
 
-vector<keyval_t> txtrecstrparse(string txtstr)
+vector<keyval_t> txtrec2keyvalvec(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
     keyval_t elem;
@@ -76,7 +76,7 @@ vector<keyval_t> txtrec2keyvalvec(vector<string> TXT)
     vector<keyval_t> keyvalvec, keyvalvectmp;
     string txt, txtstr;
     for(i=0;i<TXT.size();i++){
-        keyvalvectmp = txtrecstrparse(TXT[i]);
+        keyvalvectmp = txtrec2keyvalvec(TXT[i]);
         keyvalvec.insert(keyvalvec.end(), keyvalvectmp.begin(), keyvalvectmp.end());
     }
 

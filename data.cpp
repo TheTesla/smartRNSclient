@@ -140,7 +140,7 @@ smartrns_data_t txtrec2smartrnsdata(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
 
-    smartrnsvec = txtrecstrparse(txtstr);
+    smartrnsvec = txtrec2keyvalvec(txtstr);
 
     return smartrnsvec2smartrnsdata(smartrnsvec);
 }

@@ -18,20 +18,13 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    u_char nsbuf[N];
-    char dispbuf[N];
-    ns_msg msg;
-    ns_rr rr;
-    uint32_t l;
-    uint32_t i;
     string domain, domainhash, request, output, topdomain;
     string decstr;
+    vector<string> decvec;
     smartrns_conf_t conf;
     smartrns_data_t data;
     vector<keyval_t> keyvalvec;
 
-    byte b64decarr[CIPHERLEN*8/6+1];
-    byte decptarr[CIPHERLEN];
 
 
     vector<string> txts;
@@ -65,9 +58,9 @@ int main(int argc, char *argv[])
 
     txts = getTXTrecs(domain, 4);
     //cout << txts[0] << endl;
-    base64dec(b64decarr, txts[0]);
-    decstr = AESdec(b64decarr, request);
-    keyvalvec = txtrecstrparse(decstr);
+
+    decvec = decrypt(txts, request, conf.contprimenc, conf.contenc);
+    keyvalvec = txtrec2keyvalvec(decvec);
     print_key_val_vec(keyvalvec);
     conf = smartrnsvec2smartrnsconf(keyvalvec);
     print_smartrns_config(conf);
@@ -75,40 +68,6 @@ int main(int argc, char *argv[])
     print_smartrns_data(data);
     cout << decstr << endl;
 
-    return 0;
-
-
-
-    cout << request << endl;
-
-    cout << endl << domain << " " << domain.length() << endl;
-
-    res_init();
-    l = res_query(domain.c_str(), ns_c_any, ns_t_any, nsbuf, sizeof(nsbuf));
-    ns_initparse(nsbuf, l, &msg);
-    l = ns_msg_count(msg, ns_s_an);
-    cout << l << endl;
-    for (i = 0; i < l; i++)
-    {
-        ns_parserr(&msg, ns_s_an, i, &rr);
-        u_char const* rdata = ns_rr_rdata(rr);
-        if(0==rdata) {
-            cout << "Kein Eintrag!" << endl;
-            return 0;
-        }
-        cout << (unsigned)rdata[0] << endl;
-        if(0==rdata[0]){
-            cout << "Leerer Eintrag!" << endl;
-            return 0;
-        }
-
-        cout << endl << decptarr << endl;
-        ns_sprintrr(&msg, &rr, NULL, NULL, dispbuf, sizeof(dispbuf));
-        cout << endl << dispbuf << endl;
-    }
-
-
-    cout << endl;
     return 0;
 }
 

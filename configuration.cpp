@@ -2,8 +2,25 @@
 
 #include "configuration.h"
 
+primenc_et primencstr2enum(string str)
+{
+    if("NONE"       == str) return NO_PRIMENC;
+    if("base16"     == str) return BASE16;
+    if("base32"     == str) return BASE32;
+    if("base64"     == str) return BASE64;
+    if("base85"     == str) return BASE85;
+    return PRIMENC_NOT_SPEC;
+}
 
-
+string enum2primencstr(primenc_et enc)
+{
+    if(NO_PRIMENC == enc) return "NONE";
+    if(BASE16     == enc) return "base16";
+    if(BASE32     == enc) return "base32";
+    if(BASE64     == enc) return "base64";
+    if(BASE85     == enc) return "base85";
+    return "undefined";
+}
 
 urienc_et uriencstr2enum(string str)
 {
@@ -67,6 +84,8 @@ smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
             smartrnsconf.version = smartrnsvec[i].val;
         }else if("smartrns.conf.salt" == smartrnsvec[i].key){
             smartrnsconf.salt = smartrnsvec[i].val;
+        }else if("smartrns.conf.uriprimenc" == smartrnsvec[i].key){
+            smartrnsconf.uriprimenc = primencstr2enum(smartrnsvec[i].val);
         }else if("smartrns.conf.urienc" == smartrnsvec[i].key){
             smartrnsconf.urienc = uriencstr2enum(smartrnsvec[i].val);
         }else if("smartrns.conf.subdomlen" == smartrnsvec[i].key){
@@ -75,6 +94,8 @@ smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
             smartrnsconf.passwd = true;
         }else if("smartrns.conf.subdom" == smartrnsvec[i].key){
             smartrnsconf.subdom = true;
+        }else if("smartrns.conf.contprimenc" == smartrnsvec[i].key){
+            smartrnsconf.contprimenc = primencstr2enum(smartrnsvec[i].val);
         }else if("smartrns.conf.contenc" == smartrnsvec[i].key){
             smartrnsconf.contenc = contencstr2enum(smartrnsvec[i].val);
         }
@@ -92,7 +113,7 @@ smartrns_conf_t txtrec2smartrnsconf(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
 
-    smartrnsvec = txtrecstrparse(txtstr);
+    smartrnsvec = txtrec2keyvalvec(txtstr);
 
     return smartrnsvec2smartrnsconf(smartrnsvec);
 }
@@ -106,6 +127,7 @@ void print_smartrns_config(smartrns_conf_t conf)
     cout << "  salt             = " << conf.salt << endl;
     cout << "  subdomain-length = " << conf.subdomlen << endl;
     cout << "  uri-encoding     = " << enum2uriencstr(conf.urienc) << endl;
+    cout << "  cont.-prim.-enc. = " << enum2primencstr(conf.contprimenc) << endl;
     cout << "  content-encoding = " << enum2contencstr(conf.contenc) << endl;
 
     if(conf.subdom) cout << "  + Subdomain available!" << endl;

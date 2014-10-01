@@ -45,6 +45,11 @@ void base16dec(byte* dec, byte* base16arr, uint32_t len)
     b16d.MessageEnd();
 }
 
+void nodec(byte* dec, byte* nocod, uint32_t len)
+{
+    strncpy((char*) dec, (char*) nocod, len);
+}
+
 void base64dec(byte* dec, string base64str)
 {
     base64dec(dec, (byte*) base64str.c_str(), base64str.size());
@@ -59,6 +64,12 @@ void base16dec(byte* dec, string base16str)
 {
     base16dec(dec, (byte*) base16str.c_str(), base16str.size());
 }
+
+void nodec(byte* dec, string nocodstr)
+{
+    nodec((byte*) dec, (byte*) nocodstr.c_str(), nocodstr.size());
+}
+
 
 void AESdec(byte* decpt, u_char* cipher, string keystr)
 {
@@ -86,6 +97,17 @@ string AESdec(u_char* cipher, string keystr)
     byte decb[CIPHERLEN];
     AESdec(decb, cipher, keystr);
     string decstr(reinterpret_cast<const char*>(decb));
+    return decstr;
+}
+
+void nocrypt(byte* decpt, u_char* nocipher)
+{
+    strncpy((char*) decpt, (char*) nocipher, CIPHERLEN);
+}
+
+string nocrypt(u_char* nocipher)
+{
+    string decstr(reinterpret_cast<const char*>(nocipher));
     return decstr;
 }
 
@@ -145,22 +167,33 @@ vector<string> b16AESdec(vector<string> b16cipher, string keystr)
 
 vector<string> decrypt (vector<string> cipher, string keystr, primenc_et contprimenc, contenc_et contsecenc)
 {
-    if(AES_128 == contsecenc){
-        if(BASE64 == contprimenc){
-            return b64AESdec(cipher, keystr);
+    byte primdecarr[CIPHERLEN*2+1];
+    uint32_t i;
+    vector<string> decvec;
+    for(i=0;i<cipher.size();i++){
+        if(NO_PRIMENC == contprimenc){
+            nodec(primdecarr, cipher[i]);
+        }else if(BASE64 == contprimenc){
+            base64dec(primdecarr, cipher[i]);
         }else if(BASE32 == contprimenc){
-            return b32AESdec(cipher, keystr);
+            base32dec(primdecarr, cipher[i]);
         }else if(BASE16 == contprimenc){
-            return b16AESdec(cipher, keystr);
+            base16dec(primdecarr, cipher[i]);
         }else{
             throw contprimenc;
             cout << "This primary encoding is not supported yet." << endl;
         }
 
-    }else{
-        throw contsecenc;
-        cout << "This secondary encoding is not supported yet." << endl;
+
+        if(NO_CONTENC == contsecenc){
+            decvec.push_back(nocrypt(primdecarr));
+        }else if(AES_128 == contsecenc){
+            decvec.push_back(AESdec(primdecarr, keystr));
+        }else{
+            throw contsecenc;
+            cout << "This secondary encoding is not supported yet." << endl;
+        }
     }
-    vector<string> nothing;
-    return nothing;
+
+    return decvec;
 }

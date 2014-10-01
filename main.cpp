@@ -14,6 +14,31 @@
 
 using namespace std;
 
+string uritop(string uri, size_t* pos)
+{
+    uri = '@' + uri;
+    *pos = uri.find_last_of('@');
+    return uri.substr(*pos+1);
+}
+
+string uripart(string uri, size_t* pos)
+{
+    size_t newpos, atpos;
+    string partstr;
+    atpos = uri.find_last_of('@');
+    if(std::string::npos!=atpos){
+        uri[atpos] = '.';
+    }
+    uri = '.'+uri;
+    newpos = uri.find_last_of('.', *pos-1);
+    if(std::string::npos == newpos){
+        *pos = std::string::npos;
+        return "";
+    }
+    partstr = uri.substr(newpos+1, newpos - *pos);
+    *pos = newpos;
+    return partstr;
+}
 
 
 int main(int argc, char *argv[])

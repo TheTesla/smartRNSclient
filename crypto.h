@@ -27,10 +27,14 @@ string hashdomain(string request);
 void base64dec(byte* dec, byte* base64arr, uint32_t len = CIPHERLEN*8/6+1);
 void base32dec(byte* dec, byte* base32arr, uint32_t len = CIPHERLEN*8/5+1);
 void base16dec(byte* dec, byte* base16arr, uint32_t len = CIPHERLEN*8/4+1);
+void nodec(byte* dec, byte* nocod, uint32_t len = CIPHERLEN+1);
+
 
 void base64dec(byte* dec, string base64str);
 void base32dec(byte* dec, string base32str);
 void base16dec(byte* dec, string base16str);
+void nodec(byte* dec, string nocodstr);
+
 
 void AESdec(byte* decpt, u_char* cipher, string keystr);
 string AESdec(u_char* cipher, string keystr);

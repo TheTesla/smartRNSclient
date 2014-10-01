@@ -23,23 +23,32 @@ string uritop(string uri, size_t* pos)
 
 string uripart(string uri, size_t* pos)
 {
-    size_t newpos, atpos;
+    size_t newpos;
     string partstr;
-    atpos = uri.find_last_of('@');
-    if(std::string::npos!=atpos){
-        uri[atpos] = '.';
-    }
     uri = '.'+uri;
     newpos = uri.find_last_of('.', *pos-1);
-    if(std::string::npos == newpos){
-        *pos = std::string::npos;
-        return "";
-    }
     partstr = uri.substr(newpos+1, newpos - *pos);
     *pos = newpos;
     return partstr;
 }
 
+
+string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc, urienc_et urienc)
+{
+    string suburi;
+    suburi = uripart(uri, pos);
+    if(NO_PRIMENC == primenc){
+        if(NO_URIENC == urienc){
+            return suburi;
+        }
+    }else if(BASE16 == primenc){
+        if(SHA_1 == urienc){
+            return hashdomain(uri.substr(*pos)).substr(0,subdomlen);
+        }
+    }
+    cout << "get domain - encoding not supported!" << endl;
+    return "";
+}
 
 int main(int argc, char *argv[])
 {
@@ -49,8 +58,11 @@ int main(int argc, char *argv[])
     smartrns_conf_t conf;
     smartrns_data_t data;
     vector<keyval_t> keyvalvec;
+    size_t pos = 0;
 
 
+    conf.contenc = NO_CONTENC;
+    conf.contprimenc = NO_PRIMENC;
 
     vector<string> txts;
 
@@ -63,34 +75,27 @@ int main(int argc, char *argv[])
     request = argv[1];
 
     // everything after the @
-    topdomain = request.substr(request.find_first_of("@")+1);
-
-    txts = getTXTrecs(topdomain, 4);
-
-    cout << txts[0] << endl;
-
-    keyvalvec = txtrec2keyvalvec(txts);
-    print_key_val_vec(keyvalvec);
-    conf = smartrnsvec2smartrnsconf(keyvalvec);
-    print_smartrns_config(conf);
-    data = smartrnsvec2smartrnsdata(keyvalvec);
-    print_smartrns_data(data);
-
+    domain = uritop(request, &pos);
 
     // now before the @
-    output = hashdomain(request);
-    domain = output.substr(0,conf.subdomlen)+'.'+request.substr(request.find_first_of("@")+1);
+    while(0 != pos){
+        txts = getTXTrecs(domain, 4);
 
-    txts = getTXTrecs(domain, 4);
-    //cout << txts[0] << endl;
+        cout << txts[0] << endl;
 
-    decvec = decrypt(txts, request, conf.contprimenc, conf.contenc);
-    keyvalvec = txtrec2keyvalvec(decvec);
-    print_key_val_vec(keyvalvec);
-    conf = smartrnsvec2smartrnsconf(keyvalvec);
-    print_smartrns_config(conf);
-    data = smartrnsvec2smartrnsdata(keyvalvec);
-    print_smartrns_data(data);
+        decvec = decrypt(txts, request, conf.contprimenc, conf.contenc);
+        keyvalvec = txtrec2keyvalvec(decvec);
+        print_key_val_vec(keyvalvec);
+        conf = smartrnsvec2smartrnsconf(keyvalvec);
+        print_smartrns_config(conf);
+        data = smartrnsvec2smartrnsdata(keyvalvec);
+        print_smartrns_data(data);
+
+        domain = getdomain(request, &pos, conf.subdomlen, conf.uriprimenc, conf.urienc)+'.'+domain;
+        cout << domain  << " " << pos << endl;
+    }
+
+
     cout << decstr << endl;
 
     return 0;

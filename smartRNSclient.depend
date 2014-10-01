@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1411952002 source:/home/stefan/smartRNSclient/main.cpp
+1412193018 source:/home/stefan/smartRNSclient/main.cpp
 	<iostream>
 	<netinet/in.h>
 	<arpa/nameser.h>
@@ -38,7 +38,7 @@
 1411911220 source:/home/stefan/smartRNSclient/parse.cpp
 	"parse.h"
 
-1412122023 source:/home/stefan/smartRNSclient/crypto.cpp
+1412191946 source:/home/stefan/smartRNSclient/crypto.cpp
 	"crypto.h"
 
 1412122095 /home/stefan/smartRNSclient/crypto.h

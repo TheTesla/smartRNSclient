@@ -2,8 +2,6 @@
 #include "crypto.h"
 
 
-
-
 string hashdomain(string request)
 {
     CryptoPP::SHA hash;
@@ -197,3 +195,5 @@ vector<string> decrypt (vector<string> cipher, string keystr, primenc_et contpri
 
     return decvec;
 }
+
+

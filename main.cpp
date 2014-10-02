@@ -36,16 +36,33 @@ string uripart(string uri, size_t* pos)
 string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc, urienc_et urienc)
 {
     string suburi;
+    byte encdom[CryptoPP::SHA::DIGESTSIZE];
     suburi = uripart(uri, pos);
+
     if(NO_PRIMENC == primenc){
         if(NO_URIENC == urienc){
             return suburi;
         }
-    }else if(BASE16 == primenc){
-        if(SHA_1 == urienc){
-            return hashdomain(uri.substr(*pos)).substr(0,subdomlen);
-        }
+        nourienc(encdom, uri.substr(*pos));
     }
+
+    if(SHA_1 == urienc){
+        sha1(encdom, uri.substr(*pos));
+    }else if(SHA_224 == urienc){
+        sha224(encdom, uri.substr(*pos));
+    }else if(SHA_256 == urienc){
+        sha256(encdom, uri.substr(*pos));
+    }else if(SHA_384 == urienc){
+        sha384(encdom, uri.substr(*pos));
+    }else if(SHA_512 == urienc){
+        sha512(encdom, uri.substr(*pos));
+    }
+
+
+    if(BASE16 == primenc){
+        return base16enc(encdom, CryptoPP::SHA::DIGESTSIZE).substr(0,subdomlen);
+    }
+
     cout << "get domain - encoding not supported!" << endl;
     return "";
 }
@@ -78,7 +95,7 @@ int main(int argc, char *argv[])
     domain = uritop(request, &pos);
 
     // now before the @
-    while(0 != pos){
+    while(1){
         txts = getTXTrecs(domain, 4);
 
         cout << txts[0] << endl;
@@ -91,6 +108,7 @@ int main(int argc, char *argv[])
         data = smartrnsvec2smartrnsdata(keyvalvec);
         print_smartrns_data(data);
 
+        if(0==pos) break;
         domain = getdomain(request, &pos, conf.subdomlen, conf.uriprimenc, conf.urienc)+'.'+domain;
         cout << domain  << " " << pos << endl;
     }

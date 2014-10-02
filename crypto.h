@@ -23,7 +23,21 @@
 using namespace std;
 using namespace CryptoPP;
 
+void nourienc(byte* digest, string arg);
+void sha1(byte* digest, string arg);
+void sha224(byte* digest, string arg);
+void sha256(byte* digest, string arg);
+void sha384(byte* digest, string arg);
+void sha512(byte* digest, string arg);
+
+
 string hashdomain(string request);
+
+string base64enc(byte* enc, uint32_t len);
+string base32enc(byte* enc, uint32_t len);
+string base16enc(byte* enc, uint32_t len);
+
+
 void base64dec(byte* dec, byte* base64arr, uint32_t len = CIPHERLEN*8/6+1);
 void base32dec(byte* dec, byte* base32arr, uint32_t len = CIPHERLEN*8/5+1);
 void base16dec(byte* dec, byte* base16arr, uint32_t len = CIPHERLEN*8/4+1);

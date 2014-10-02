@@ -1,15 +1,49 @@
 
 #include "crypto.h"
 
+void nourienc(byte* digest, string arg)
+{
+    strncpy((char*) digest, arg.c_str(), arg.length());
+}
+
+void sha1(byte* digest, string arg)
+{
+    CryptoPP::SHA hashfun;
+    hashfun.CalculateDigest(digest, (byte*) arg.c_str(), arg.length());
+}
+
+void sha224(byte* digest, string arg)
+{
+    CryptoPP::SHA224 hashfun;
+    hashfun.CalculateDigest(digest, (byte*) arg.c_str(), arg.length());
+}
+
+void sha256(byte* digest, string arg)
+{
+    CryptoPP::SHA256 hashfun;
+    hashfun.CalculateDigest(digest, (byte*) arg.c_str(), arg.length());
+}
+
+void sha384(byte* digest, string arg)
+{
+    CryptoPP::SHA384 hashfun;
+    hashfun.CalculateDigest(digest, (byte*) arg.c_str(), arg.length());
+}
+
+void sha512(byte* digest, string arg)
+{
+    CryptoPP::SHA512 hashfun;
+    hashfun.CalculateDigest(digest, (byte*) arg.c_str(), arg.length());
+}
 
 string hashdomain(string request)
 {
-    CryptoPP::SHA hash;
+    CryptoPP::SHA hashfun;
     CryptoPP::HexEncoder encoder;
-    std::string output, domain;
+    std::string output;
 
     byte digest[CryptoPP::SHA::DIGESTSIZE];
-    hash.CalculateDigest(digest, (byte*) domain.c_str(), domain.length());
+    hashfun.CalculateDigest(digest, (byte*) request.c_str(), request.length());
 
     encoder.Attach(new CryptoPP::StringSink(output));
     encoder.Put(digest, sizeof(digest));
@@ -18,10 +52,40 @@ string hashdomain(string request)
     return output;
 }
 
+string base64enc(byte* enc, uint32_t len)
+{
+    Base64Encoder b64e;
+    string retstr;
+    b64e.Attach(new CryptoPP::StringSink(retstr));
+    b64e.Put(enc, len);
+    b64e.MessageEnd();
+    return retstr;
+}
+
+string base32enc(byte* enc, uint32_t len)
+{
+    Base32Encoder b32e;
+    string retstr;
+    b32e.Attach(new CryptoPP::StringSink(retstr));
+    b32e.Put(enc, len);
+    b32e.MessageEnd();
+    return retstr;
+}
+
+string base16enc(byte* enc, uint32_t len)
+{
+    HexEncoder b16e;
+    string retstr;
+    b16e.Attach(new CryptoPP::StringSink(retstr));
+    b16e.Put(enc, len);
+    b16e.MessageEnd();
+    return retstr;
+}
+
 void base64dec(byte* dec, byte* base64arr, uint32_t len)
 {
     Base64Decoder b64d;
-    b64d.Attach(new ArraySink((byte*)dec, CIPHERLEN));
+    b64d.Attach(new ArraySink((byte*)dec, len));
     b64d.Put(base64arr, len);
     b64d.MessageEnd();
 }
@@ -30,7 +94,7 @@ void base64dec(byte* dec, byte* base64arr, uint32_t len)
 void base32dec(byte* dec, byte* base32arr, uint32_t len)
 {
     Base32Decoder b32d;
-    b32d.Attach(new ArraySink((byte*)dec, CIPHERLEN));
+    b32d.Attach(new ArraySink((byte*)dec, len));
     b32d.Put(base32arr, len);
     b32d.MessageEnd();
 }
@@ -38,7 +102,7 @@ void base32dec(byte* dec, byte* base32arr, uint32_t len)
 void base16dec(byte* dec, byte* base16arr, uint32_t len)
 {
     HexDecoder b16d;
-    b16d.Attach(new ArraySink((byte*)dec, CIPHERLEN));
+    b16d.Attach(new ArraySink((byte*)dec, len));
     b16d.Put(base16arr, len);
     b16d.MessageEnd();
 }

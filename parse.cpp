@@ -1,3 +1,6 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS parse/interprete configuration and data strings in TXT records
+*/
 
 #include "parse.h"
 
@@ -64,8 +67,9 @@ vector<keyval_t> txtrec2keyvalvec(string txtstr)
 void print_key_val_vec(vector<keyval_t> arg)
 {
     uint32_t i;
+    cout << "ANSWER" << endl << endl;
     for(i=0;i<arg.size();i++){
-        cout << arg[i].key << " " << arg[i].val << endl;
+        cout << "    " << arg[i].key << " " << arg[i].val << endl;
     }
 
 }

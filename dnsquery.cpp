@@ -1,3 +1,6 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS do the DNS query
+*/
 
 #include "dnsquery.h"
 

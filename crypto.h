@@ -6,7 +6,6 @@
 #include <crypto++/modes.h>
 #include <crypto++/aes.h>
 #include <crypto++/filters.h>
-#include <crypto++/md5.h>
 #include <crypto++/sha.h>
 #include <crypto++/hex.h>
 #include <crypto++/base64.h>

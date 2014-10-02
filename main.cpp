@@ -1,3 +1,9 @@
+
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS-Query-Client
+*/
+
+
 #include <iostream>
 
 #include <netinet/in.h>
@@ -46,7 +52,9 @@ string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc
         nourienc(encdom, uri.substr(*pos));
     }
 
-    if(SHA_1 == urienc){
+    if(NO_URIENC == urienc){
+        nourienc(encdom, uri.substr(*pos));
+    }else if(SHA_1 == urienc){
         sha1(encdom, uri.substr(*pos));
     }else if(SHA_224 == urienc){
         sha224(encdom, uri.substr(*pos));
@@ -56,11 +64,22 @@ string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc
         sha384(encdom, uri.substr(*pos));
     }else if(SHA_512 == urienc){
         sha512(encdom, uri.substr(*pos));
+    }else{
+        cout << "getdomain() - secondary encoding not supported!" << endl;
+        throw urienc;
     }
 
 
     if(BASE16 == primenc){
         return base16enc(encdom, CryptoPP::SHA::DIGESTSIZE).substr(0,subdomlen);
+    }else if(BASE32 == primenc){
+        return base32enc(encdom, CryptoPP::SHA::DIGESTSIZE).substr(0,subdomlen);
+    }else if(NO_PRIMENC == primenc){
+        cout << "getdomain() - combination not supported! Hashed value must be primencoded!" << endl;
+        throw primenc;
+    }else{
+        cout << "getdomain() - primary encoding not supported!" << endl;
+        throw primenc;
     }
 
     cout << "get domain - encoding not supported!" << endl;
@@ -69,8 +88,7 @@ string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc
 
 int main(int argc, char *argv[])
 {
-    string domain, domainhash, request, output, topdomain;
-    string decstr;
+    string domain, request;
     vector<string> decvec;
     smartrns_conf_t conf;
     smartrns_data_t data;
@@ -84,37 +102,43 @@ int main(int argc, char *argv[])
     vector<string> txts;
 
     if(2!=argc){
+        cout << endl;
         cout << "Please specify Domain to lookup!" << endl;
+        cout << endl;
+        cout << "    Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>" << endl;
+        cout << endl;
+        cout << "    This Program is designed to query and decode smartRNS data over standard DNS." << endl;
+        cout << "USAGE: smartRNSclient YourName@smartrns.net" << endl;
         return 0;
     }
 
-    //request = "stefan.helmert@entroserv.de";
+    // the domain to query
     request = argv[1];
 
     // everything after the @
     domain = uritop(request, &pos);
 
     // now before the @
-    while(1){
+    while(1){ // recursion over all subdomains
+        cout << "REQUEST" << endl << endl << "    " << domain << endl << endl;
+
+        // get the DNS records
         txts = getTXTrecs(domain, 4);
 
-        cout << txts[0] << endl;
-
+        // do decryption of requestet DNS content
         decvec = decrypt(txts, request, conf.contprimenc, conf.contenc);
+        // interprete the content
         keyvalvec = txtrec2keyvalvec(decvec);
-        print_key_val_vec(keyvalvec);
+        print_key_val_vec(keyvalvec);   // output
         conf = smartrnsvec2smartrnsconf(keyvalvec);
-        print_smartrns_config(conf);
+        print_smartrns_config(conf);    // output
         data = smartrnsvec2smartrnsdata(keyvalvec);
-        print_smartrns_data(data);
+        print_smartrns_data(data);      // output
 
-        if(0==pos) break;
+        if(0==pos) break; // no remaining subdomain
+        // next subdomain
         domain = getdomain(request, &pos, conf.subdomlen, conf.uriprimenc, conf.urienc)+'.'+domain;
-        cout << domain  << " " << pos << endl;
     }
-
-
-    cout << decstr << endl;
 
     return 0;
 }

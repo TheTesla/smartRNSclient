@@ -1,4 +1,6 @@
-
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS configuration data
+*/
 
 #include "configuration.h"
 

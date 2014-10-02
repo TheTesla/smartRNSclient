@@ -1,3 +1,7 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS doing the cryptopart - hash, aes
+
+*/
 
 #include "crypto.h"
 

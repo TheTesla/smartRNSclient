@@ -1,3 +1,7 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS content data
+*/
+
 
 #include "data.h"
 

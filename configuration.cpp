@@ -4,16 +4,18 @@
 
 #include "configuration.h"
 
+// get primary encoding type from configuration in DNS entry or domainname
 primenc_et primencstr2enum(string str)
 {
     if("NONE"       == str) return NO_PRIMENC;
     if("base16"     == str) return BASE16;
-    if("base32"     == str) return BASE32;
-    if("base64"     == str) return BASE64;
-    if("base85"     == str) return BASE85;
+    if("base32"     == str) return BASE32; // for domainname, the last "=" must be cutted away
+    if("base64"     == str) return BASE64; // not usable for domainname, because upper and lower case characters
+    if("base85"     == str) return BASE85; // -> the same; not used yet
     return PRIMENC_NOT_SPEC;
 }
 
+// reverse function of primencstr2enum()
 string enum2primencstr(primenc_et enc)
 {
     if(NO_PRIMENC == enc) return "NONE";
@@ -24,6 +26,7 @@ string enum2primencstr(primenc_et enc)
     return "undefined";
 }
 
+// get hash function type for domain
 urienc_et uriencstr2enum(string str)
 {
     if("NONE"       == str) return NO_URIENC;
@@ -37,6 +40,7 @@ urienc_et uriencstr2enum(string str)
     return URIENC_NOT_SPEC;
 }
 
+// reverse function of uriencstr2enum()
 string enum2uriencstr(urienc_et enc)
 {
     if(NO_URIENC        == enc) return "NONE";
@@ -51,6 +55,7 @@ string enum2uriencstr(urienc_et enc)
     return "undefined";
 }
 
+// get cryptop algorithmus for content
 contenc_et contencstr2enum(string str)
 {
     if("NONE"           == str) return NO_CONTENC;
@@ -58,6 +63,7 @@ contenc_et contencstr2enum(string str)
     return CONTENC_NOT_SPEC;
 }
 
+// reverse function of contencstr2enum()
 string enum2contencstr(contenc_et enc)
 {
     if(NO_CONTENC           == enc) return "NONE";
@@ -66,20 +72,22 @@ string enum2contencstr(contenc_et enc)
     return "undefined";
 }
 
-
+// get smartRNS configuration of subdomain (domainencoding, encryption, ...)
 smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
 {
     uint32_t i;
     string txt, txtstr;
     smartrns_conf_t smartrnsconf;
 
-    smartrnsconf.version   = "";
-    smartrnsconf.subdom    = false;
-    smartrnsconf.passwd    = false;
-    smartrnsconf.salt      = "";
-    smartrnsconf.urienc    = URIENC_NOT_SPEC;
-    smartrnsconf.subdomlen = 0;
-    smartrnsconf.contenc   = CONTENC_NOT_SPEC;
+    smartrnsconf.version    = "";
+    smartrnsconf.subdom     = false;
+    smartrnsconf.passwd     = false;
+    smartrnsconf.salt       = "";
+    smartrnsconf.uriprimenc = PRIMENC_NOT_SPEC;
+    smartrnsconf.urienc     = URIENC_NOT_SPEC;
+    smartrnsconf.subdomlen  = 0;
+    smartrnsconf.contprimenc= PRIMENC_NOT_SPEC;
+    smartrnsconf.contenc    = CONTENC_NOT_SPEC;
 
     for(i=0;i<smartrnsvec.size();i++){
         if("smartrns.conf.version" == smartrnsvec[i].key){
@@ -104,13 +112,10 @@ smartrns_conf_t smartrnsvec2smartrnsconf(vector<keyval_t> smartrnsvec)
 
     }
 
-
     return smartrnsconf;
 }
 
-
-
-
+// convert one TXT record to configuration (not used)
 smartrns_conf_t txtrec2smartrnsconf(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
@@ -120,6 +125,7 @@ smartrns_conf_t txtrec2smartrnsconf(string txtstr)
     return smartrnsvec2smartrnsconf(smartrnsvec);
 }
 
+// show configuration
 void print_smartrns_config(smartrns_conf_t conf)
 {
     cout << endl;

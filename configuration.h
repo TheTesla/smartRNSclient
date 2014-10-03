@@ -1,3 +1,7 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS configuration data
+*/
+
 #ifndef CONFIGURATION_H_INCLUDED
 #define CONFIGURATION_H_INCLUDED
 

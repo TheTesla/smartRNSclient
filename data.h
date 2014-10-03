@@ -1,3 +1,8 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS content data
+*/
+
+
 #ifndef DATA_H_INCLUDED
 #define DATA_H_INCLUDED
 
@@ -44,9 +49,20 @@ typedef enum usagetype_e
 
     USAGETYPE_NOT_SPEC = -1
 
-
 } usagetype_et;
 
+typedef enum state_e
+{
+    NO_STATE    = 0,
+    ONLINE      = 1,
+    OFFLINE     = 2,
+    ACTIVE      = 3,
+    INACTIVE    = 4,
+    AVAILABLE   = 5,
+    AWAY        = 6,
+
+    STATE_NOT_SPEC = -1
+} state_et;
 
 typedef struct smartrns_data_entry_phone_s
 {
@@ -82,6 +98,7 @@ typedef struct smartrns_data_entry_s
     string name;
     string comment;
     entrytype_et type;
+    state_et state;
     void* entry;
 
 } smartrns_data_entry_t;
@@ -95,10 +112,14 @@ typedef struct smartrns_data_s
 
 } smartrns_data_t;
 
-
+state_et str2state(string str);
+string state2str(state_et sta);
 entrytype_et str2entrytype(string str);
+string entrytype2str(entrytype_et entr);
 subtype_et str2subtype(string str);
+string subtype2str(subtype_et subt);
 usagetype_et str2usagetype(string str);
+string usagetype2str(usagetype_et usage);
 smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec);
 smartrns_data_t txtrec2smartrnsdata(string txtstr);
 void print_smartrns_data(smartrns_data_t data);

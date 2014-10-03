@@ -4,6 +4,7 @@
 
 #include "parse.h"
 
+// main parser function - onverts one TXT record to vector of key-value-pairs contain configuration and data
 vector<keyval_t> txtrec2keyvalvec(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
@@ -63,7 +64,7 @@ vector<keyval_t> txtrec2keyvalvec(string txtstr)
 
 }
 
-
+// show content of key-value vector
 void print_key_val_vec(vector<keyval_t> arg)
 {
     uint32_t i;
@@ -74,6 +75,7 @@ void print_key_val_vec(vector<keyval_t> arg)
 
 }
 
+// extends parser to process a vector of TXT records, writing the key-value-pairs to one large vector
 vector<keyval_t> txtrec2keyvalvec(vector<string> TXT)
 {
     uint32_t i;

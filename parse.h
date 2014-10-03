@@ -1,3 +1,8 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS parse/interprete configuration and data strings in TXT records
+*/
+
+
 #ifndef PARSE_H_INCLUDED
 #define PARSE_H_INCLUDED
 

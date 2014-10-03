@@ -5,8 +5,33 @@
 
 #include "data.h"
 
+// get state of entry (e. g. mobile telefon is off)
+state_et str2state(string str)
+{
+    if("none"       == str) return NO_STATE;
+    if("online"     == str) return ONLINE;
+    if("offline"    == str) return OFFLINE;
+    if("active"     == str) return ACTIVE;
+    if("inactive"   == str) return INACTIVE;
+    if("available"  == str) return AVAILABLE;
+    if("away"       == str) return AWAY;
+    return STATE_NOT_SPEC;
+}
 
+// reverse function of str2state()
+string state2str(state_et sta)
+{
+    if(NO_STATE   == sta) return "none";
+    if(ONLINE     == sta) return "online";
+    if(OFFLINE    == sta) return "offline";
+    if(ACTIVE     == sta) return "active";
+    if(INACTIVE   == sta) return "inactive";
+    if(AVAILABLE  == sta) return "available";
+    if(AWAY       == sta) return "away";
+    return "undefined";
+}
 
+// get type of data entry
 entrytype_et str2entrytype(string str)
 {
     if("none"   == str) return NO_ETYPE;
@@ -17,6 +42,7 @@ entrytype_et str2entrytype(string str)
     return ETYPE_NOT_SPEC;
 }
 
+// reverse function of str2entrytype()
 string entrytype2str(entrytype_et entr)
 {
     if(NO_ETYPE == entr) return "none";
@@ -29,6 +55,7 @@ string entrytype2str(entrytype_et entr)
     return "undefined";
 }
 
+// get the subtype of data entry, e. g. type=phone, subtype=mobile
 subtype_et str2subtype(string str)
 {
     if("none"       == str) return NO_SUBTYPE;
@@ -39,6 +66,7 @@ subtype_et str2subtype(string str)
     return SUBTYPE_NOT_SPEC;
 }
 
+// reverse function of str2subtype()
 string subtype2str(subtype_et subt)
 {
     if(NO_SUBTYPE == subt) return "none";
@@ -51,6 +79,7 @@ string subtype2str(subtype_et subt)
     return "undefined";
 }
 
+// get usage type of data entry, e. g. telephone for WORK
 usagetype_et str2usagetype(string str)
 {
     if("none"   == str) return NO_USAGETYPE;
@@ -61,6 +90,7 @@ usagetype_et str2usagetype(string str)
     return USAGETYPE_NOT_SPEC;
 }
 
+// reverse function of str2usagetype()
 string usagetype2str(usagetype_et usage)
 {
     if(NO_USAGETYPE == usage) return "none";
@@ -73,14 +103,15 @@ string usagetype2str(usagetype_et usage)
     return "undefined";
 }
 
+// extract smartrns.data from DNS entry
 smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec)
 {
     smartrns_data_t data;
     smartrns_data_entry_t entry;
-    smartrns_data_entry_phone_t phone;
-    smartrns_data_entry_email_t email;
-    smartrns_data_entry_icq_t icq;
-    smartrns_data_entry_jabber_t jabber;
+    smartrns_data_entry_phone_t phone;   // only used if entry.type = phone
+    smartrns_data_entry_email_t email;   // only used if entry.type = email
+    smartrns_data_entry_icq_t icq;       // only used if entry.type = icq
+    smartrns_data_entry_jabber_t jabber; // only used if entry.type = jabber
     uint32_t i;
 
     for(i=0;i<smartrnsvec.size();i++){
@@ -96,6 +127,8 @@ smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec)
             entry.comment = smartrnsvec[i].val;
         }else if("smartrns.data.entry.type" == smartrnsvec[i].key){
             entry.type = str2entrytype(smartrnsvec[i].val);
+        }else if("smartrns.data.entry.state" == smartrnsvec[i].key){
+            entry.state = str2state(smartrnsvec[i].val);
         }else if("smartrns.data.entry.country" == smartrnsvec[i].key){
             phone.country = smartrnsvec[i].val;
         }else if("smartrns.data.entry.prefix" == smartrnsvec[i].key){
@@ -139,7 +172,7 @@ smartrns_data_t smartrnsvec2smartrnsdata(vector<keyval_t> smartrnsvec)
     return data;
 }
 
-
+// convert one TXT record to smartRNS data
 smartrns_data_t txtrec2smartrnsdata(string txtstr)
 {
     vector<keyval_t> smartrnsvec;
@@ -149,6 +182,7 @@ smartrns_data_t txtrec2smartrnsdata(string txtstr)
     return smartrnsvec2smartrnsdata(smartrnsvec);
 }
 
+// show data entries
 void print_smartrns_data(smartrns_data_t data)
 {
     uint32_t i;
@@ -164,6 +198,7 @@ void print_smartrns_data(smartrns_data_t data)
         cout << i <<" Name:         " << data.entries[i].name << endl;
         cout << "    Comment:      " << data.entries[i].comment << endl;
         cout << "    Type:         " << entrytype2str(data.entries[i].type) << endl;
+        cout << "    State:        " << state2str(data.entries[i].state) << endl;
         if(PHONE_NR == data.entries[i].type){
             cout << "    Phone (" << subtype2str(((smartrns_data_entry_phone_t*) data.entries[i].entry)->subtype) << "): " << ((smartrns_data_entry_phone_t*) data.entries[i].entry)->country << " " << ((smartrns_data_entry_phone_t*) data.entries[i].entry)->prefix << " " << ((smartrns_data_entry_phone_t*) data.entries[i].entry)->number << " " << ((smartrns_data_entry_phone_t*) data.entries[i].entry)->suffix << " (" << usagetype2str(((smartrns_data_entry_phone_t*) data.entries[i].entry)->usage) << ")"<< endl;
         }else if(ICQ == data.entries[i].type){
@@ -179,4 +214,5 @@ void print_smartrns_data(smartrns_data_t data)
         }
         cout << endl;
     }
+    cout << endl;
 }

@@ -5,7 +5,7 @@
 #include "dnsquery.h"
 
 
-
+// DNS query function; returns TXT records as a vector of strings; accepts domain as string
 vector<string> getTXTrecs(string domain, uint32_t maxTXTs)
 {
     u_char nsbuf[N];

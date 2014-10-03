@@ -20,6 +20,7 @@
 
 using namespace std;
 
+// get the right side of "@"
 string uritop(string uri, size_t* pos)
 {
     uri = '@' + uri;
@@ -27,6 +28,7 @@ string uritop(string uri, size_t* pos)
     return uri.substr(*pos+1);
 }
 
+// get the next subdomain-part, e. h. public.myname@smartrns.net -> get "myname" and then get "public"
 string uripart(string uri, size_t* pos)
 {
     size_t newpos;
@@ -38,8 +40,8 @@ string uripart(string uri, size_t* pos)
     return partstr;
 }
 
-
-string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc, urienc_et urienc)
+// tell the next domain to reuqest - in encrypted/converted form
+string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc, urienc_et urienc, string salt)
 {
     string suburi;
     byte encdom[CryptoPP::SHA::DIGESTSIZE];
@@ -49,26 +51,26 @@ string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc
         if(NO_URIENC == urienc){
             return suburi;
         }
-        nourienc(encdom, uri.substr(*pos));
+        nourienc(encdom, salt+uri.substr(*pos));
     }
 
     if(NO_URIENC == urienc){
-        nourienc(encdom, uri.substr(*pos));
+        nourienc(encdom, salt+uri.substr(*pos));
     }else if(SHA_1 == urienc){
-        sha1(encdom, uri.substr(*pos));
+        sha1(encdom, salt+uri.substr(*pos));
     }else if(SHA_224 == urienc){
-        sha224(encdom, uri.substr(*pos));
+        sha224(encdom, salt+uri.substr(*pos));
     }else if(SHA_256 == urienc){
-        sha256(encdom, uri.substr(*pos));
+        sha256(encdom, salt+uri.substr(*pos));
     }else if(SHA_384 == urienc){
-        sha384(encdom, uri.substr(*pos));
+        sha384(encdom, salt+uri.substr(*pos));
     }else if(SHA_512 == urienc){
-        sha512(encdom, uri.substr(*pos));
+        sha512(encdom, salt+uri.substr(*pos));
     }else{
         cout << "getdomain() - secondary encoding not supported!" << endl;
         throw urienc;
+        return "";
     }
-
 
     if(BASE16 == primenc){
         return base16enc(encdom, CryptoPP::SHA::DIGESTSIZE).substr(0,subdomlen);
@@ -77,14 +79,16 @@ string getdomain(string uri, size_t* pos, uint32_t subdomlen, primenc_et primenc
     }else if(NO_PRIMENC == primenc){
         cout << "getdomain() - combination not supported! Hashed value must be primencoded!" << endl;
         throw primenc;
+        return "";
     }else{
         cout << "getdomain() - primary encoding not supported!" << endl;
         throw primenc;
+        return "";
     }
 
-    cout << "get domain - encoding not supported!" << endl;
     return "";
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -137,7 +141,15 @@ int main(int argc, char *argv[])
 
         if(0==pos) break; // no remaining subdomain
         // next subdomain
-        domain = getdomain(request, &pos, conf.subdomlen, conf.uriprimenc, conf.urienc)+'.'+domain;
+        try{
+            domain = getdomain(request, &pos, conf.subdomlen, conf.uriprimenc, conf.urienc, conf.salt)+'.'+domain;
+        }
+        catch(const urienc_et& e){
+            if(URIENC_NOT_SPEC){
+                cout << "URI encoding of subdomain not specified in configuration, aborting!" << endl;
+            }
+            break;
+        }
     }
 
     return 0;

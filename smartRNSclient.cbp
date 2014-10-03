@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="stefan.helmert@smartrns.de" />
+				<Option parameters="stefan_helmert@smartrns.de" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

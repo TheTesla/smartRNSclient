@@ -1,3 +1,7 @@
+/*  Copyright (C) 2014 Stefan Helmert <stefan.helmert@gmx.net>
+    smartRNS do the DNS query
+*/
+
 #ifndef DNSQUERY_H_INCLUDED
 #define DNSQUERY_H_INCLUDED
 

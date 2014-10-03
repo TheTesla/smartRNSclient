@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
         txts = getTXTrecs(domain, 4);
 
         // do decryption of requestet DNS content
-        decvec = decrypt(txts, request, conf.contprimenc, conf.contenc);
+        decvec = decrypt(txts, conf.salt+request, conf.contprimenc, conf.contenc);
         // interprete the content
         keyvalvec = txtrec2keyvalvec(decvec);
         print_key_val_vec(keyvalvec);   // output

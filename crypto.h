@@ -64,6 +64,7 @@ vector<string> b32AESdec(vector<string> b32cipher, string keystr);
 vector<string> b16AESdec(vector<string> b16cipher, string keystr);
 
 vector<string> decrypt (vector<string> cipher, string keystr, primenc_et contprimenc, contenc_et contsecenc);
+void print_decvec(vector<string> decvec);
 
 
 #endif // CRYPTO_H_INCLUDED

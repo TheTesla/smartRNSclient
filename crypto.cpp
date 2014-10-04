@@ -263,4 +263,11 @@ vector<string> decrypt (vector<string> cipher, string keystr, primenc_et contpri
     return decvec;
 }
 
+void print_decvec(vector<string> decvec)
+{
+    uint32_t i;
+    for(i=0;i<decvec.size();i++){
+        cout << "TXT[" << i << "] = " << decvec[i] << endl;
+    }
+}
 
